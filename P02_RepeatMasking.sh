@@ -19,7 +19,7 @@
 
 # ---------------------------------
 # Submission:
-# sbatch --array=1-x RepeatMasking.sh -f $FORMAT -t $TOP
+# sbatch --array=1-x P02_RepeatMasking.sh -f $FORMAT -t $TOP
 # ---------------------------------
 
 # ---------------------------------
@@ -35,33 +35,38 @@ FORMAT=""
 TOP=""
 
 usage() {
-    echo "Usage: $0 -f FORMAT -t TOP" >&2
-	echo "   -f, --format  Mandatory. Either NCBI or bwamem" >&2
-	echo "   -t, --top     Optional. Number of top (longest) scaffolds to keep." >&2
-	echo "                 Omit this option entirely to keep all scaffold (do NOT pass -t with no value)." >&2
-    exit 1
+  local exit_code="${1:-1}"
+   {
+    echo "Usage: sbatch --array=1-x P02_RepeatMasking.sh -f FORMAT -t TOP"
+	echo "   -f, --format  Mandatory. Either NCBI or bwamem"
+	echo "   -t, --top     Optional. Number of top (longest) scaffolds to keep."
+	echo "                 Omit this option entirely to keep all scaffold (do NOT pass -t with no value)."
+	echo "    -h, --help   Show this help"
+	} >&2
+    exit "exit_code"
 }
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
     -f|--format) FORMAT="$2"; shift 2 ;;
 	-t|--top) TOP="$2"; shift 2 ;;
-    *) 
+	-h|--help) usage 0 ;;
+    *)
          echo "Invalid option: $1" >&2
-         usage
+         usage 1
          ;;
     esac
 done
 
 if [[ -z "$FORMAT" ]]; then
     echo "Erreur: -f is mandatory; either NCBI or bwamem" >&2
-    exit 1
+    usage 1
 fi
 
 # reject anything that isn't one of the two accepted values
 if [[ "$FORMAT" != "NCBI" && "$FORMAT" != "bwamem" ]]; then
     echo "Erreur: -f must be NCBI or bwamem" >&2
-    exit 1
+    usage 1
 fi
 
 # Paths

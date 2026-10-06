@@ -43,16 +43,22 @@ QSCORE="15"
 GENOME_REF=""
 
 usage() {
-    echo "Usage: $0 -g GENOME_REF" >&2
-    exit 1
+  local exit_code="${1:-1}"
+  {
+    echo "Usage: sbatch $0 -g GENOME_REF" >&2
+    echo "  -g|--genomeref Mandatory. Name of the genome of reference for aligment" >&2
+    echo "  -h|--help  Show this help"
+   } >&2 
+    exit "$exit_code"
 }
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
-    -g | --genomeref) GENOME_REF="$2"; shift 2 ;;
-      *) 
+    -g|--genomeref) GENOME_REF="$2"; shift 2 ;;
+    -h|--help) usage 0 ;;
+    *) 
          echo "Invalid option: $1" >&2
-         usage
+         usage 1
          ;;
     esac
 done

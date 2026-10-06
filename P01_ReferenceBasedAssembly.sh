@@ -45,8 +45,8 @@ GENOME_REF=""
 usage() {
   local exit_code="${1:-1}"
   {
-    echo "Usage: sbatch --array=1-x $0 -g GENOME_REF" >&2
-    echo "  -g|--genomeref Mandatory. Name of the genome of reference for aligment" >&2
+    echo "Usage: sbatch --array=1-x P01_ReferenceBasedAssembly.sh -g GENOME_REF" >&2
+    echo "  -g|--genomeref Mandatory. Name of the reference genome for alignment"
     echo "  -h|--help  Show this help"
    } >&2 
     exit "$exit_code"
@@ -54,18 +54,27 @@ usage() {
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
-    -g|--genomeref) GENOME_REF="$2"; shift 2 ;;
-    -h|--help) usage 0 ;;
-    *) 
-         echo "Invalid option: $1" >&2
-         usage 1
-         ;;
+        -g|--genomeref)
+            if [[ $# -lt 2 || -z "${2:-}" || "$2" == -* ]]; then
+                echo "Error: $1 requires a value" >&2
+                usage 1
+            fi
+            GENOME_REF="$2"
+            shift 2
+            ;;
+        -h|--help)
+            usage 0
+            ;;
+        *)
+            echo "Invalid option: $1" >&2
+            usage 1
+            ;;
     esac
 done
 
 if [[ -z "$GENOME_REF" ]]; then
-    echo "Erreur: -g is mandatory" >&2
-    exit 1
+    echo "Erreur: -g|--genomeref is mandatory" >&2
+    usage 1
 fi
 
 # Paths

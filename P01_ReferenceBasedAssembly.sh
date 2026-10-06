@@ -45,7 +45,7 @@ GENOME_REF=""
 usage() {
   local exit_code="${1:-1}"
   {
-    echo "Usage: sbatch $0 -g GENOME_REF" >&2
+    echo "Usage: sbatch --array=1-x $0 -g GENOME_REF" >&2
     echo "  -g|--genomeref Mandatory. Name of the genome of reference for aligment" >&2
     echo "  -h|--help  Show this help"
    } >&2 
